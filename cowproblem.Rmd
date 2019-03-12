@@ -1,0 +1,46 @@
+---
+output:
+  pdf_document: default
+  html_document: default
+---
+The context for the problem is as follows:
+
+A farmer has a regular circiular field filled with grass.
+If he ties a cow to the edge of the circle, how long does the lead
+have to be in order for the cow to eat exactly half of the field.
+
+One approach involves a geometric approach of calculating the total area
+using arcs and sectors of two joined circles.
+
+Another valid approach involves polar coordinates. The former methods was 
+used to find a solution.
+```{r}
+library(rootSolve)
+library(Rmpfr)
+math_function <- function(x) {
+  value <- (x*cos(x) - sin(x/2) + (pi/2))
+  return(value);
+}
+curve(math_function(x), 0, 2*pi)
+abline(h = 0, lty = 3)
+abline(v = 0, lty = 2)
+solutions_list <- uniroot.all(math_function, c(0, 2*pi))
+points(solutions_list, y = rep(0, length(solutions_list)), pch = 16, cex = 1)
+
+
+check_function <- function(x) {
+  value <- (2*x*cos(x/2)*cos(x/2)) + (pi/2) - (x) - (sin(x/2))
+  return(value);
+}
+
+check_function(solutions_list)
+solutions_list
+
+mpfr(solutions_list[1], precBits=2)
+
+2*cos(solutions_list[1]/2)
+```
+
+
+So, the length of the rope the cow is tethered to must be 1.1152 times the radius of
+the circular enclosure.
